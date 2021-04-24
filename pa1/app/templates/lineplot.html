@@ -1,0 +1,135 @@
+{% comment %} {% extends 'index.html' %}
+
+{% block scripts %}
+<script>
+{% comment %} {% block jquery %} {% endcomment %}
+    {% comment %} 
+    var endpoint = '/'
+    var labels = []
+    var data = []
+    $.ajax({
+        method : "GET",
+        url : endpoint,
+        success : function(data){
+            console.log(data)
+        }
+        error : function(error_data){
+            console.log("error")
+        }
+    }) {% endcomment %}
+    {% comment %} $(document).ready(function(){
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {  
+            type: 'bar',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })
+{% comment %} {% endblock jquery %} {% endcomment %}
+{% comment %} </script>
+{% comment %} {% endblock scripts %} {% endcomment %} 
+
+var endpoint = '/'
+var labels = []
+var data = []
+$.ajax({
+    method : "POST",
+    url : endpoint,
+    success : function(data){
+        labels = data.labels
+        defData = data.DefaultData
+        console.log("working")
+        setChart()
+    }
+    error : function(error_data){
+        console.log("error")
+    }
+})
+function setChart(){
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {  
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Avalanche Effect',
+                data: defData,
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                borderWidth: 1,
+                fill : "true"
+            }]
+        },
+        options: {
+            events: ['click'],
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+                x: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+labels: [{% for item in context %}{{item.labels}},{% endfor %}],
+data: [{% for item in context %}{{item.DefaultData}},{% endfor %}],
+
+$(document).ready(function(){
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {  
+            type: 'line',
+            data: {
+                labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    label: 'Avalanche Effect',
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    borderWidth: 1,
+                    fill : "true"
+                }]
+            },
+            options: {
+                events: ['click'],
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    })

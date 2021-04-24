@@ -1,0 +1,237 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.1.1/dist/chart.min.js"></script>
+    
+  
+    <!-- <script>
+        // $(document).ready(function(){
+        //     $('#a').hide();
+        //     // $("#b").hide();
+        //     // $("#c").hide();
+        //     // alert("abc");
+        // });
+        $("select#id_length").on('change' ,function(){
+            var x = $(this).val();
+            alert(x);
+            if(x == '32'){
+                $("#a").show();
+            }
+            else if (x=='64'){
+                $("#b").show();
+            }  
+            else if (x=='128'){
+                $("#c").show();
+            }
+        });
+    </script> -->
+    <!-- <script>
+      {% block jquery %}
+        var ctx = document.getElementById('myChart');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [1, 2, 3, 4, 5, 6, 7],
+                datasets: [{
+                    label: 'Avalanche effect demonstration',
+                    labels: labels,
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    fill: true,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            }
+            });
+      {% endblock %}      
+    </script> -->
+    
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <form method="post" >
+                {% csrf_token %}
+                <div class="form-row">
+                  <div class="col">
+                      {{form.rounds}}
+                    <!-- <label for="validationServer01">First name</label>
+                    <input type="text" class="form-control is-valid" id="validationServer01" placeholder="First name" value="Mark" required> -->
+                    <div class="invalid-feedback">
+                        {{form.rounds.errors}}
+                    </div>
+                  </div>
+                  
+                  <div class="col">
+                    {{form.length}}
+                    <!-- <label for="validationServer02">Last name</label>
+                    <input type="text" class="form-control is-valid" id="validationServer02" placeholder="Last name" value="Otto" required> -->
+                    <div class="invalid-feedback">
+                        Please select length of block
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-row" id="a">
+                    <div class="col">
+                      {{form.block}}
+                    </div>
+                    <div class="col">
+                        {{form.key}}
+                    </div>
+                </div>
+        
+                <div class="form-row">
+                  <div class="col">
+                    {{form.option}}
+                    <!-- -md-6 mb-3 -->
+                    <!-- <label for="validationServer03">City</label>
+                    <input type="text" class="form-control is-invalid" id="validationServer03" placeholder="City" required> -->
+                    <div class="invalid-feedback">
+                      Please select an option
+                    </div>
+                  </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Check</button>
+                
+                
+            </form>
+        </div>
+        
+        <div class="form-row">
+            <div class="w-25 p-3">
+                <h2>Output</h2>
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col">Round number</th>
+                        <th scope="col">Number of bits changed in plaintext</th>
+                      </tr>
+                    </thead>
+                    {% for item in output %}
+                    <tbody>
+                      <tr>
+                        <th scope="row">{{forloop.counter0}}</th>
+                        <td>{{item}}</td>
+                      </tr>
+                    </tbody>
+                    {% endfor %}
+                  </table>
+            </div>
+            <div class="w-75 p-3">
+              <canvas id="myChart"></canvas>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  
+        <script>
+          var endpoint = '';
+        
+          $.ajax({
+            method: "POST",
+            url: endpoint,
+            success: function(data) {
+              drawLineGraph(data, 'myChart');
+              console.log("drawing");
+            },
+            error: function(error_data) {
+              console.log(error_data);
+            }
+          })
+        
+        
+          function drawLineGraph(data, id) {
+            var labels = data.labels;
+            var chartLabel = data.chartLabel;
+            var chartdata = data.chartdata;
+            var ctx = document.getElementById(id).getContext('2d');
+            var chart = new Chart(ctx, {
+              // The type of chart we want to create
+              type: 'line',
+        
+              // The data for our dataset
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: chartLabel,
+                  backgroundColor: 'rgb(255, 100, 200)',
+                  borderColor: 'rgb(55, 99, 132)',
+                  data: chartdata,
+                }]
+              },
+        
+              // Configuration options go here
+              options: {
+                scales: {
+                  xAxes: [{
+                    display: true
+                  }],
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }
+        
+            });
+          }
+        </script>
+    </div>
+    
+</body>
+</html>
+
+// <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+//               <script>
+//                 // === include 'setup' then 'config' above ===
+//                 // <block:setup:1>
+//                 const labels = [
+//                   'January',
+//                   'February',
+//                   'March',
+//                   'April',
+//                   'May',
+//                   'June',
+//                 ];
+//                 const data = {
+//                   labels: labels,
+//                   datasets: [{
+//                     label: 'My First dataset',
+//                     backgroundColor: 'rgb(255, 99, 132)',
+//                     borderColor: 'rgb(255, 99, 132)',
+//                     data: [0, 10, 5, 2, 20, 30, 45],
+//                   }]
+//                 };
+//                 // </block:setup>
+
+//                 // <block:config:0>
+//                 const config = {
+//                   type: 'line',
+//                   data,
+//                   options: {}
+//                 };
+//                 // </block:config>
+
+//                 module.exports = {
+//                   actions: [],
+//                   config: config,
+//                 };
+//                 var myChart = new Chart(
+//                   document.getElementById('myChart'),
+//                   config
+//                 );
+//               </script>
+              <!-- {% block content %}{% endblock %} -->
