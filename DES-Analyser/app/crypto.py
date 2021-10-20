@@ -205,19 +205,23 @@ def run(n, l, b, k, x):
     Key_eff = permute(k,PC1)
 
 
-    # Data for graph - To plot rounds vs diff_in_cipher
+    # Data for graph - To plot rounds vs diff_in_cipher and diff_in_key
     round_keys = []
-    c1 = []
-    c2 = []
+    c1 = []  # ciphertext per round
+    c2 = []  # ciphertext per round with altered plaintext or key
     diff_in_cipher = []
     data = []
-    alteredtext = ""
+    alteredtext = ""   # altered plaintext or key
+    final_cipher = ""
+    re_encrypted_plaintext = ""
 
     if x == 'p': # If avalanche effect is to be observed with only single change of bit in plaintext
         alteredtext = create_diff_in1bit(b)
         diff_in_cipher.append(1)
-        c1 = encrypt(n, l, b, Key_eff)
-        c2 = encrypt(n, l, alteredtext, Key_eff)
+        c1.append(b)
+        c1.extend(encrypt(n, l, b, Key_eff))
+        c2.append(alteredtext)
+        c2.extend(encrypt(n, l, alteredtext, Key_eff))
         diff_in_cipher.extend(find_difference(c1, c2, l)) 
     else: # If avalanche effect is to be observed with only single change of bit(not in parity bits) in key
         alteredtext = create_diff_in1bit(Key_eff)
@@ -225,6 +229,9 @@ def run(n, l, b, k, x):
         c1 = encrypt(n, l, b, Key_eff)
         c2 = encrypt(n, l, b, alteredtext)
         diff_in_cipher.extend(find_difference(c1, c2, l))
+    final_cipher = c1[len(c1) - 1]
+    re_encrypted = encrypt(n, l, final_cipher, Key_eff)
+    re_encrypted_plaintext = re_encrypted[len(re_encrypted)-1]
 
     data.append(diff_in_cipher)
     data.append(round_keys)
@@ -232,5 +239,7 @@ def run(n, l, b, k, x):
     data.append(c2)
     data.append(Key_eff)
     data.append(alteredtext)
+    data.append(b)
+    data.append(re_encrypted_plaintext)
     
     return data
